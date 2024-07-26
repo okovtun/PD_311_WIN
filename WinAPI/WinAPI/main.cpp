@@ -1,19 +1,19 @@
-#include<Windows.h>
+п»ї#include<Windows.h>
 #include"resource.h"
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-//HIWORD - старшее слово
-//LOWORD - младшее слово
+//HIWORD - СЃС‚Р°СЂС€РµРµ СЃР»РѕРІРѕ
+//LOWORD - РјР»Р°РґС€РµРµ СЃР»РѕРІРѕ
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
-	//hInstance - это *.exe-модуль нашей программы
-	//hPrevInst - этот параметр использовался в комбинированном коде IA-16/IA-32 (Win98)
-	//			  на сегодня не актуален.
-	//lpCmdLine - LongPointer to Command prompt, эта командная строка передается в функцию WinMain при запуске программы.
-	//			  lpCmdLine представляет собой массив строк, нулевым элементом которого всегда является полный путь к *.exe-файлу.
+	//hInstance - СЌС‚Рѕ *.exe-РјРѕРґСѓР»СЊ РЅР°С€РµР№ РїСЂРѕРіСЂР°РјРјС‹
+	//hPrevInst - СЌС‚РѕС‚ РїР°СЂР°РјРµС‚СЂ РёСЃРїРѕР»СЊР·РѕРІР°Р»СЃСЏ РІ РєРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅРѕРј РєРѕРґРµ IA-16/IA-32 (Win98)
+	//			  РЅР° СЃРµРіРѕРґРЅСЏ РЅРµ Р°РєС‚СѓР°Р»РµРЅ.
+	//lpCmdLine - LongPointer to Command prompt, СЌС‚Р° РєРѕРјР°РЅРґРЅР°СЏ СЃС‚СЂРѕРєР° РїРµСЂРµРґР°РµС‚СЃСЏ РІ С„СѓРЅРєС†РёСЋ WinMain РїСЂРё Р·Р°РїСѓСЃРєРµ РїСЂРѕРіСЂР°РјРјС‹.
+	//			  lpCmdLine РїСЂРµРґСЃС‚Р°РІР»СЏРµС‚ СЃРѕР±РѕР№ РјР°СЃСЃРёРІ СЃС‚СЂРѕРє, РЅСѓР»РµРІС‹Рј СЌР»РµРјРµРЅС‚РѕРј РєРѕС‚РѕСЂРѕРіРѕ РІСЃРµРіРґР° СЏРІР»СЏРµС‚СЃСЏ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє *.exe-С„Р°Р№Р»Сѓ.
 
-	/*MessageBox(NULL, "HelloWorld!\nЭто окно сообщения, детка", "Hello WinAPI", MB_ABORTRETRYIGNORE | MB_ICONSTOP | MB_DEFBUTTON3 | MB_HELP | MB_TOPMOST);
+	/*MessageBox(NULL, "HelloWorld!\nР­С‚Рѕ РѕРєРЅРѕ СЃРѕРѕР±С‰РµРЅРёСЏ, РґРµС‚РєР°", "Hello WinAPI", MB_ABORTRETRYIGNORE | MB_ICONSTOP | MB_DEFBUTTON3 | MB_HELP | MB_TOPMOST);
 	std::cout << typeid(char).name() << std::endl;
 	std::cout << typeid(wchar_t).name() << std::endl;
 	WndProc*/
@@ -29,25 +29,25 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//hwnd - Handler to Window (дескриптор окна)
+	//hwnd - Handler to Window (РґРµСЃРєСЂРёРїС‚РѕСЂ РѕРєРЅР°)
 	switch (uMsg)
 	{
 		//WM_ - Windows Message
-	case WM_INITDIALOG:	//Отрабатывает только один раз, при создании окна
-		//H - Handler (обработчик, дескриптор)
+	case WM_INITDIALOG:	//РћС‚СЂР°Р±Р°С‚С‹РІР°РµС‚ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р·, РїСЂРё СЃРѕР·РґР°РЅРёРё РѕРєРЅР°
+		//H - Handler (РѕР±СЂР°Р±РѕС‚С‡РёРє, РґРµСЃРєСЂРёРїС‚РѕСЂ)
 	{
 		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_BTC));
 		SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
 	}
 	break;
-	case WM_COMMAND:	//Здесь обраьатываются нажатия на кнопки, ввод текста, и любые изменения состояния окна.
+	case WM_COMMAND:	//Р—РґРµСЃСЊ РѕР±СЂР°СЊР°С‚С‹РІР°СЋС‚СЃСЏ РЅР°Р¶Р°С‚РёСЏ РЅР° РєРЅРѕРїРєРё, РІРІРѕРґ С‚РµРєСЃС‚Р°, Рё Р»СЋР±С‹Рµ РёР·РјРµРЅРµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ РѕРєРЅР°.
 		switch (LOWORD(wParam))
 		{
-		case IDOK:		MessageBox(hwnd, "Была нажата кнопка OK", "Info", MB_OK | MB_ICONINFORMATION); break;
+		case IDOK:		MessageBox(hwnd, "Р‘С‹Р»Р° РЅР°Р¶Р°С‚Р° РєРЅРѕРїРєР° OK", "Info", MB_OK | MB_ICONINFORMATION); break;
 		case IDCANCEL:	EndDialog(hwnd, 0);
 		}
 		break;
-	case WM_CLOSE:		//Отрабатывает при нажатии на кнопку X (Закрыть)
+	case WM_CLOSE:		//РћС‚СЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё РЅР°Р¶Р°С‚РёРё РЅР° РєРЅРѕРїРєСѓ X (Р—Р°РєСЂС‹С‚СЊ)
 		EndDialog(hwnd, 0);
 		break;
 	}
