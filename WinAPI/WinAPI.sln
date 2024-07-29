@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.34930.48
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34031.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinAPI", "WinAPI\WinAPI.vcxproj", "{A6D0468E-3F50-490C-B3F6-FA0C9075771A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ComboBox", "ComboBox\ComboBox.vcxproj", "{31D4D661-D104-4C92-9FDF-2F4B1B40140B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{A6D0468E-3F50-490C-B3F6-FA0C9075771A}.Release|x64.Build.0 = Release|x64
 		{A6D0468E-3F50-490C-B3F6-FA0C9075771A}.Release|x86.ActiveCfg = Release|Win32
 		{A6D0468E-3F50-490C-B3F6-FA0C9075771A}.Release|x86.Build.0 = Release|Win32
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Debug|x64.ActiveCfg = Debug|x64
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Debug|x64.Build.0 = Debug|x64
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Debug|x86.ActiveCfg = Debug|Win32
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Debug|x86.Build.0 = Debug|Win32
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Release|x64.ActiveCfg = Release|x64
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Release|x64.Build.0 = Release|x64
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Release|x86.ActiveCfg = Release|Win32
+		{31D4D661-D104-4C92-9FDF-2F4B1B40140B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
