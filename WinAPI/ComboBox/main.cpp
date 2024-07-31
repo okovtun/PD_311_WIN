@@ -1,6 +1,8 @@
 #include<Windows.h>
+#include<cstdio>
 #include"resource.h"
 
+//CONST CHAR g_sz_INVITATION[] = "бБЕДХРЕ БЮЬЕ ХЛЪ";
 CONST CHAR* values[] = { "This","is","my","first","Combo","Box" };
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -24,6 +26,22 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 		
 	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		{
+			HWND hCombo = GetDlgItem(hwnd, IDC_COMBO);
+			INT i = SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+			CONST INT SIZE = 256;
+			CHAR sz_buffer[SIZE]{};//яндепфхр ярпнйс меопнядеярбемммн явхрюммсч хг COMBOBOX
+			CHAR sz_message[SIZE]{};//яндепфхр йнмевмне яннаыгемхе, йнрнпне асдер бшбндхрэяъ б MESSAGEBOX
+			SendMessage(hCombo, CB_GETLBTEXT, i, (LPARAM)sz_buffer);
+			sprintf(sz_message, "бШ БШАПЮКХ ОСМЙР ╧%i, ЯН ГМЮВЕМХЕЛ %s", i, sz_buffer);
+			MessageBox(hwnd, sz_message, "You choice", MB_OK | MB_ICONINFORMATION);
+		}
+		break;
+		case IDCANCEL:EndDialog(hwnd, 0);
+		}
 		break;
 	case WM_CLOSE:EndDialog(hwnd, 0);
 	}

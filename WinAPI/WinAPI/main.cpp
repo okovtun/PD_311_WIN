@@ -4,6 +4,7 @@
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //HIWORD - старшее слово
 //LOWORD - младшее слово
+CONST CHAR g_sz_INVITATION[] = "Введите ваше имя";
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -40,6 +41,8 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
 //		SendMessage(окно, сообщение, параметры сообщения)
 
+		HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+		SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITATION);
 		/*HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
 		SetFocus(hEditLogin);*/
 		//SetFocus(GetDlgItem(hwnd, IDC_EDIT_LOGIN));
@@ -47,7 +50,20 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_COMMAND:	//Здесь обраьатываются нажатия на кнопки, ввод текста, и любые изменения состояния окна.
 		switch (LOWORD(wParam))
+		{ 
+		case IDC_EDIT_LOGIN:
 		{
+			CONST INT SIZE = 256;
+			CHAR sz_buffer[SIZE]{};
+			HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+			SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
+			if (HIWORD(wParam)==EN_SETFOCUS && strcmp(sz_buffer, g_sz_INVITATION) == 0)
+				SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
+			if (HIWORD(wParam)==EN_KILLFOCUS && strlen(sz_buffer) == 0)
+				SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITATION);
+			
+		}
+		break;
 		case IDC_BUTTON_COPY:
 		{
 			HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
