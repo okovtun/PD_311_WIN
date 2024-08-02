@@ -1,4 +1,5 @@
 ﻿#include<Windows.h>
+#include"resource.h"
 
 /*
 System Classes:
@@ -29,9 +30,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wc.cbClsExtra = 0;
 
 	//1.2) Внешний вид:
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hIcon = (HICON)LoadImage(hInstance, "palm.ico", IMAGE_ICON, LR_DEFAULTSIZE,LR_DEFAULTSIZE, LR_LOADFROMFILE);
+	wc.hIconSm = (HICON)LoadImage(hInstance, "shell.ico", IMAGE_ICON, LR_DEFAULTSIZE,LR_DEFAULTSIZE, LR_LOADFROMFILE);
+	//wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	//wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor = (HCURSOR)LoadImage(hInstance, "starcraft-original\\Background.ani", IMAGE_CURSOR, LR_DEFAULTSIZE,LR_DEFAULTSIZE,LR_LOADFROMFILE);
+	//wc.hCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1));
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
 	//1.3) Основные параметры класса:
@@ -69,12 +73,19 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 		MessageBox(NULL, "Window creation failed", "Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
-	ShowWindow(hwnd, nCmdShow);
-	UpdateWindow(hwnd);
+	ShowWindow(hwnd, nCmdShow);	//Задает режим отображения окна: Свернуто в окно, размернуто ра весь экран, свернуто в панель задач
+	//https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 
-	//3) Закпуск цикла сообщений:
+	UpdateWindow(hwnd);			//
 
+	//3) Запуск цикла сообщений:
 
+	MSG msg;
+	while (GetMessage(&msg, 0, 0, 0) > 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
 	return 0;
 }

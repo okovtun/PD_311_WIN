@@ -6,7 +6,13 @@ https://github.com/maybez/maybe/blob/master/Books/windows/Windows%20Via%20C%EF%B
 https://github.com/micros-uz/csharp/blob/master/Level%201/Books/Microsoft.Press.CLR.via.Csharp.4th.Edition.Oct.2012.pdf
 https://777russia.ru/book/uploads/%D0%9F%D0%A0%D0%9E%D0%93%D0%A0%D0%90%D0%9C%D0%9C%D0%98%D0%A0%D0%9E%D0%92%D0%90%D0%9D%D0%98%D0%95/C%23/CLR%20via%20C%23%20%28.NET%204.5%29%2C%204th%20Edition%202012%20%28%D0%BE%D1%80%D0%B8%D0%B3%D0%B8%D0%BD%D0%B0%D0%BB%29.pdf
 
+TOREAD:
+https://learn.microsoft.com/en-us/windows/win32/winmsg/windowing
+
 TODO:
+			!!!		Отдохнуть	  !!!
+
+DONE:
 1. В Solution 'WinAPI' добавить проект 'ListBox', и выполнить все те же действия, 
    которые были выполнены с ComboBox;
 2. В проект 'ListBox' добавить две кнопки:
