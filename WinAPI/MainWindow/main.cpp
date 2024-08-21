@@ -218,8 +218,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hCombo, CB_GETLBTEXT, i, (LPARAM)sz_selected_cursor);
 			HCURSOR hCursor = (HCURSOR)LoadImage(NULL, sz_selected_cursor, IMAGE_CURSOR, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 			SetCursorPos(300, 300);
+			SetCursor(hCursor);
 			SendMessage(hwnd, WM_SETCURSOR, 0, (LPARAM)sz_selected_cursor);
-			//SetCursor(hCursor);
 			return FALSE;//https://stackoverflow.com/questions/19257237/reset-cursor-in-wm-setcursor-handler-properly
 		}
 			break;
