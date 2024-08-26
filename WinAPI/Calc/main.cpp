@@ -24,6 +24,7 @@ CONST INT g_i_START_X_OPERATIONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_I
 CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4;
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+VOID PushButton(HWND parent, INT id);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -160,7 +161,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 
 					hwnd,
-					(HMENU)IDC_BUTTON_PLUS + i,
+					(HMENU)(IDC_BUTTON_PLUS + i),
 					NULL,
 					NULL
 				);
@@ -249,29 +250,108 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-	case WM_KEYDOWN:
+	case WM_KEYUP:
 	{
-		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)
+		if (GetKeyState(VK_SHIFT) < 0 && LOWORD(wParam) == 0x38)
+		{
+			SendMessage(hwnd, WM_COMMAND, IDC_BUTTON_ASTER, 0);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, FALSE, 0);
+		}
+		else if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)
+		{
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
-		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)
+			SendMessage(GetDlgItem(hwnd, wParam - 0x30 + IDC_BUTTON_0), BM_SETSTATE, FALSE, 0);
+		}
+		else if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)
+		{
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x60 + IDC_BUTTON_0), 0);
+			SendMessage(GetDlgItem(hwnd, wParam - 0x60 + IDC_BUTTON_0), BM_SETSTATE, FALSE, 0);
+		}
 		switch (LOWORD(wParam))
 		{
-		case VK_OEM_PERIOD: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0); break;
-		case VK_OEM_PLUS: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0); break;
-		case VK_OEM_MINUS: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0); break;
-		case VK_MULTIPLY: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0); break;
-		case VK_DIVIDE: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0); break;
+		case VK_DECIMAL:
+		case VK_OEM_PERIOD: 
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_ADD:
+		case VK_OEM_PLUS:   
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_SUBTRACT:  
+		case VK_OEM_MINUS:  
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_MULTIPLY:   
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_OEM_2:
+		case VK_DIVIDE:     
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, FALSE, 0);
+			break;
 
-		case VK_BACK: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0); break;
-		case VK_ESCAPE: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0); break;
+		case VK_BACK: 
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_BSP), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_ESCAPE: 
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0); 
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_CLEAR), BM_SETSTATE, FALSE, 0);
+			break;
+		case VK_RETURN:
+			SendMessage(hwnd, WM_COMMAND, IDC_BUTTON_EQUAL, 0);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, FALSE, 0);
+			break;
 		}
 
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		if (GetKeyState(VK_SHIFT) < 0 && LOWORD(wParam) == 0x38)
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, TRUE, 0);
+		else if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)
+		{
+			SendMessage(GetDlgItem(hwnd, wParam - 0x30 + IDC_BUTTON_0), BM_SETSTATE, TRUE, 0);
+		}
+		else if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)
+		{
+			SendMessage(GetDlgItem(hwnd, wParam - 0x60 + IDC_BUTTON_0), BM_SETSTATE, TRUE, 0);
+		}
+		switch (LOWORD(wParam))
+		{
+		case VK_DECIMAL:
+		case VK_OEM_PERIOD: SendMessage(GetDlgItem(hwnd,IDC_BUTTON_POINT), BM_SETSTATE, TRUE, 0); break;
+		case VK_ADD:
+		case VK_OEM_PLUS:   SendMessage(GetDlgItem(hwnd,IDC_BUTTON_PLUS),  BM_SETSTATE, TRUE, 0); break;
+		case VK_SUBTRACT:
+		case VK_OEM_MINUS:  SendMessage(GetDlgItem(hwnd,IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
+		case VK_MULTIPLY:   SendMessage(GetDlgItem(hwnd,IDC_BUTTON_ASTER), BM_SETSTATE, TRUE, 0); break;
+		case VK_OEM_2:
+		case VK_DIVIDE:     SendMessage(GetDlgItem(hwnd,IDC_BUTTON_SLASH), BM_SETSTATE, TRUE, 0); break;
+
+		case VK_BACK:		SendMessage(GetDlgItem(hwnd,IDC_BUTTON_BSP),   BM_SETSTATE, TRUE, 0); break;
+		case VK_ESCAPE:		SendMessage(GetDlgItem(hwnd,IDC_BUTTON_CLEAR), BM_SETSTATE, TRUE, 0); break;
+		case VK_RETURN:		SendMessage(GetDlgItem(hwnd,IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0); break;
+		}
+
+	}
+	break;
+
 	case WM_DESTROY:PostQuitMessage(0); break;
 	case WM_CLOSE:	DestroyWindow(hwnd); break;
 	default:		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 	return 0;
+}
+
+VOID PushButton(HWND parent, INT id)
+{
+	SendMessage(GetDlgItem(parent, id), BM_SETSTATE, TRUE, 0);
+	Sleep(100);
+	SendMessage(GetDlgItem(parent, id), BM_SETSTATE, FALSE, 0);
 }
