@@ -42,7 +42,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wClass.hIcon = (HICON)LoadImage(hInstance, "ICO\\calcXP.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 	wClass.hIconSm = (HICON)LoadImage(hInstance, "ICO\\calcXP.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 	wClass.hCursor = LoadCursor(hInstance, IDC_ARROW);
-	wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
+	wClass.hbrBackground = CreatePatternBrush
+	(
+		//https://stackoverflow.com/questions/63288847/how-to-set-a-bmp-image-as-the-background-of-a-window-in-windows-api-c
+		(HBITMAP)LoadImage(hInstance, "winter_night_cute_wolf.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE)
+	);
+	//wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
 	wClass.hInstance = hInstance;
 	wClass.lpszClassName = g_sz_WINDOW_CLASS;
@@ -420,26 +425,26 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	}
 	break;
-	case WM_CTLCOLOREDIT:
-	{
-		HDC hdc = (HDC)wParam;
-		SetBkMode(hdc, OPAQUE); SetBkColor(hdc, RGB(0, 0, 155));
-		SetBkColor(hdc, RGB(0, 0, 100));
-		HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
-		SetTextColor(hdc, RGB(255, 0, 0));
-		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
-		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		//SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
-		////////////////////////////////////////////////////////////////
-		/*HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
-		HDC hdcEditDisplay = GetDC(hEditDisplay);
-		SetBkMode(hdcEditDisplay, OPAQUE); SetBkColor(hdcEditDisplay, RGB(0, 0, 155));
-		HBRUSH hBrushDisplay = CreateSolidBrush(RGB(0, 0, 200));
-		SetTextColor(hdcEditDisplay, RGB(255, 0, 0));
-		ReleaseDC(hwnd, hdcEditDisplay);*/
+	//case WM_CTLCOLOREDIT:
+	//{
+	//	HDC hdc = (HDC)wParam;
+	//	SetBkMode(hdc, OPAQUE); SetBkColor(hdc, RGB(0, 0, 155));
+	//	SetBkColor(hdc, RGB(0, 0, 100));
+	//	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
+	//	SetTextColor(hdc, RGB(255, 0, 0));
+	//	SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
+	//	SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+	//	//SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
+	//	////////////////////////////////////////////////////////////////
+	//	/*HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+	//	HDC hdcEditDisplay = GetDC(hEditDisplay);
+	//	SetBkMode(hdcEditDisplay, OPAQUE); SetBkColor(hdcEditDisplay, RGB(0, 0, 155));
+	//	HBRUSH hBrushDisplay = CreateSolidBrush(RGB(0, 0, 200));
+	//	SetTextColor(hdcEditDisplay, RGB(255, 0, 0));
+	//	ReleaseDC(hwnd, hdcEditDisplay);*/
 
-		return (LRESULT)hBrush;
-	}
+	//	return (LRESULT)hBrush;
+	//}
 	break;
 	case WM_CONTEXTMENU:
 	{
