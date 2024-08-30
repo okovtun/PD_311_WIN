@@ -10,13 +10,11 @@ TOREAD:
 https://learn.microsoft.com/en-us/windows/win32/winmsg/windowing
 
 TODO:
-1. Файл можно пересохранять через графический редактор VisualStudio;
-
-TODO:
 1. Применить свои шрифты на экрне калькулятора.		DONE
    Можно использовать встроенные шрифты Windows, или собственные шрифты;
 2. Темы вынести в DLL-файлы;
 	https://learn.microsoft.com/en-us/cpp/build/creating-a-resource-only-dll?view=msvc-170
+3. Добавить возможность выбирать шрифт через контекстное меню;
 
 DONE:
 1. Поменять иконки кнопок на свои рисунки;
