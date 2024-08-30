@@ -9,12 +9,14 @@ CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
 
-CONST INT g_i_BUTTON_SIZE = 50;
-CONST INT g_i_INTERVAL = 5;
+CONST INT g_i_BUTTON_SIZE = 64;
+CONST INT g_i_INTERVAL = 0;
 CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 
 CONST INT g_i_DISPLAY_WIDTH = (g_i_BUTTON_SIZE + g_i_INTERVAL) * 5;
-CONST INT g_i_DISPLAY_HEIGHT = 22;
+CONST INT g_i_DISPLAY_HEIGHT = 64;
+CONST INT g_i_FONT_HEIGHT = g_i_DISPLAY_HEIGHT - 2;
+CONST INT g_i_FONT_WIDTH = g_i_FONT_HEIGHT/2.5;
 
 CONST INT g_i_TITLE_HEIGHT = 39;
 CONST INT g_i_WINDOW_WIDTH = g_i_DISPLAY_WIDTH + g_i_START_X * 2 + 16;
@@ -99,12 +101,31 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HWND hDisplay = CreateWindowEx
 		(
 			NULL, "Edit", "0",
-			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT | ES_READONLY,
+			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT /*| ES_READONLY*/,
 			g_i_START_X, g_i_START_Y,
 			g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGHT,
 			hwnd, (HMENU)IDC_EDIT_DISPLAY,
 			NULL, NULL
 		);
+
+		HFONT hFont = CreateFont
+		(
+			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,	//Fontsize
+			0,		//”гол наклона
+			0,		//”гол наклона
+			500,	//Font weight
+			FALSE,	//Italic
+			FALSE,	//Underline
+			FALSE,	//Strikeout
+			DEFAULT_CHARSET,
+			OUT_CHARACTER_PRECIS,
+			CLIP_CHARACTER_PRECIS,
+			ANTIALIASED_QUALITY,
+			DEFAULT_PITCH | FF_DONTCARE,
+			"Tahoma"
+		);
+		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
+
 		////////////////////// Digits: //////////////////////////
 		INT digit = 0;
 		CHAR sz_digit[2]{};
@@ -414,15 +435,15 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
 		SetTextColor(hdc, RGB(255, 0, 0));
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
-		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
+		//SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+		//SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
 		////////////////////////////////////////////////////////////////
-		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+		/*HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 		HDC hdcEditDisplay = GetDC(hEditDisplay);
 		SetBkMode(hdcEditDisplay, OPAQUE); SetBkColor(hdcEditDisplay, RGB(0, 0, 155));
 		HBRUSH hBrushDisplay = CreateSolidBrush(RGB(0, 0, 200));
 		SetTextColor(hdcEditDisplay, RGB(255, 0, 0));
-		ReleaseDC(hwnd, hdcEditDisplay);
+		ReleaseDC(hwnd, hdcEditDisplay);*/
 
 		return (LRESULT)hBrush;
 	}
