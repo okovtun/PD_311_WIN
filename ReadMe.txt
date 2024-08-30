@@ -13,6 +13,7 @@ TODO:
 1. Применить свои шрифты на экрне калькулятора.
    Можно использовать встроенные шрифты Windows, или собственные шрифты;
 2. Темы вынести в DLL-файлы;
+	https://learn.microsoft.com/en-us/cpp/build/creating-a-resource-only-dll?view=msvc-170&redirectedfrom=MSDN
 
 DONE:
 1. Поменять иконки кнопок на свои рисунки;

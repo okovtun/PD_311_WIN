@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<Windows.h>
+#include<iostream>
 #include<limits>
 #include<stdio.h>
 #include"resource.h"
@@ -90,6 +91,19 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
+		////////	Console		///////////////
+		
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		std::cout << "Hello" << std::endl;
+		//https://stackoverflow.com/questions/15543571/allocconsole-not-displaying-cout
+
+		WIN32_FILE_ATTRIBUTE_DATA fInfo;
+		GetFileAttributesEx("ButtonsBMP\\square_blue\\0.bmp", GetFileExMaxInfoLevel, &fInfo);
+		std::cout << fInfo.dwFileAttributes << std::endl;
+		//OutputDebugString("Hello world!");
+
+		///////////////////////////////
 		RECT rectWindow;
 		RECT rectClient;
 		GetWindowRect(hwnd, &rectWindow);
@@ -99,7 +113,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HWND hDisplay = CreateWindowEx
 		(
 			NULL, "Edit", "0",
-			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT | ES_READONLY,
+			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT/* | ES_READONLY*/,
 			g_i_START_X, g_i_START_Y,
 			g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGHT,
 			hwnd, (HMENU)IDC_EDIT_DISPLAY,
@@ -139,7 +153,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
-		/*HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\button_0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
+		HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
 		if (hImageDigit0 == NULL)
 		{
 			DWORD dwErrorMessageID = GetLastError();	//Функция GetLastError() возвращает числовой код последней возникшей ошибки выполненя.
@@ -156,7 +170,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			);
 			MessageBox(hwnd, lpszMessageBuffer, "Error", MB_OK | MB_ICONERROR);
 		}
-		SendMessage(hButtonDigit0, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImageDigit0);*/
+		SendMessage(hButtonDigit0, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImageDigit0);
 		CreateWindowEx
 		(
 			NULL, "Button", ".",
@@ -415,14 +429,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetTextColor(hdc, RGB(255, 0, 0));
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
 		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
+		//SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
 		////////////////////////////////////////////////////////////////
-		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+		/*HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 		HDC hdcEditDisplay = GetDC(hEditDisplay);
 		SetBkMode(hdcEditDisplay, OPAQUE); SetBkColor(hdcEditDisplay, RGB(0, 0, 155));
 		HBRUSH hBrushDisplay = CreateSolidBrush(RGB(0, 0, 200));
 		SetTextColor(hdcEditDisplay, RGB(255, 0, 0));
-		ReleaseDC(hwnd, hdcEditDisplay);
+		ReleaseDC(hwnd, hdcEditDisplay);*/
 
 		return (LRESULT)hBrush;
 	}
@@ -453,7 +467,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
-	case WM_DESTROY:PostQuitMessage(0); break;
+	case WM_DESTROY:
+		FreeConsole();
+		PostQuitMessage(0);
+		break;
 	case WM_CLOSE:	DestroyWindow(hwnd); break;
 	default:		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
