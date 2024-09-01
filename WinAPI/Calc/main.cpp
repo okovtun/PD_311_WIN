@@ -87,11 +87,17 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	return 0;
 }
 
+LPSTR FormatLastError();
 VOID SetSkin(HWND hwnd, LPSTR skin);
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static CONST CHAR DEFAULT_SKIN[] = "square_green";
+
+		///////////////////////////////
+
+		static HMODULE hButtons = LoadLibrary("ResourceOnlyDLL.dll");
+
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -107,7 +113,6 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		GetFileAttributesEx("ButtonsBMP\\square_blue\\0.bmp", GetFileExMaxInfoLevel, &fInfo);
 		std::cout << fInfo.dwFileAttributes << std::endl;
 		//OutputDebugString("Hello world!");
-
 		///////////////////////////////
 		RECT rectWindow;
 		RECT rectClient;
@@ -158,7 +163,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
-		HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
+		//HANDLE hImageDigit0 = LoadBitmap(hButtons, "IDB_BITMAP1");
+		//HANDLE hImageDigit0 = LoadBitmap(hButtons, MAKEINTRESOURCE("IDB_BITMAP1"));
+		HINSTANCE images = GetModuleHandle("ResourceOnlyDLL.dll");
+		//std::cout << MAKEINTRESOURCE(100) << std::endl;
+		HANDLE hImageDigit0 = LoadImage(hButtons, MAKEINTRESOURCE(100), IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_SHARED);
+		//HANDLE hImageDigit0 = LoadImage(hButtons, MAKEINTRESOURCE("BMP_BUTTON_0"), IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE | LR_SHARED);
+		//MessageBox(hwnd, FormatLastError(), "Error", MB_OK | MB_ICONERROR);
+		//HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
 		if (hImageDigit0 == NULL)
 		{
 			DWORD dwErrorMessageID = GetLastError();	//Функция GetLastError() возвращает числовой код последней возникшей ошибки выполненя.
@@ -473,6 +485,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_DESTROY:
+		FreeLibrary(hButtons);
 		FreeConsole();
 		PostQuitMessage(0);
 		break;
