@@ -28,6 +28,7 @@ CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + 
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID PushButton(HWND parent, INT id);
+VOID pwd();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -94,16 +95,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static CONST CHAR DEFAULT_SKIN[] = "square_green";
 
-		///////////////////////////////
+	///////////////////////////////
 
-		static HMODULE hButtons = LoadLibrary("ResourceOnlyDLL.dll");
+	static HMODULE hButtons = LoadLibrary("ResourceOnlyDLL.dll");
 
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
 		////////	Console		///////////////
-		
+
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 		std::cout << "Hello" << std::endl;
@@ -162,9 +163,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
-		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
+		//SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
 		//HANDLE hImageDigit0 = LoadBitmap(hButtons, "IDB_BITMAP1");
 		//HANDLE hImageDigit0 = LoadBitmap(hButtons, MAKEINTRESOURCE("IDB_BITMAP1"));
+		pwd();
 		HINSTANCE images = GetModuleHandle("ResourceOnlyDLL.dll");
 		//std::cout << MAKEINTRESOURCE(100) << std::endl;
 		HANDLE hImageDigit0 = LoadImage(hButtons, MAKEINTRESOURCE(100), IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_SHARED);
@@ -191,7 +193,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", ".",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_BUTTON + g_i_BUTTON_DOUBLE_SIZE + g_i_INTERVAL,
 			g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3,
@@ -211,7 +213,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CreateWindowEx
 			(
 				NULL, "Button", sz_operation,
-				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 				g_i_START_X_OPERATIONS, g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL)*(3 - i),
 				g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -226,7 +228,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "<-",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON,
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -239,7 +241,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "C",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON + g_i_BUTTON_SIZE + g_i_INTERVAL,
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -253,7 +255,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "=",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON + g_i_BUTTON_DOUBLE_SIZE + g_i_INTERVAL,
 			g_i_BUTTON_SIZE, g_i_BUTTON_DOUBLE_SIZE,
@@ -265,7 +267,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 
 
-
+		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
 	}
 	break;
 	case WM_COMMAND:
@@ -471,7 +473,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
-		case CM_SQUARE_BLUE: SetSkin(hwnd,  (LPSTR)"square_blue"); break;
+		case CM_SQUARE_BLUE: SetSkin(hwnd, (LPSTR)"square_blue"); break;
 		case CM_SQUARE_GREEN: SetSkin(hwnd, (LPSTR)"square_green"); break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		}
@@ -521,16 +523,24 @@ LPSTR FormatLastError()
 
 VOID SetSkin(HWND hwnd, LPSTR skin)
 {
+	HINSTANCE hImages = LoadLibrary("ResourceOnlyDLL.dll");
+	//https://stackoverflow.com/questions/6728782/how-does-getmodulehandle-work-in-visual-c
+	//HINSTANCE hImages = GetModuleHandle("metal_mistral.dll");//Before we call this function, DLL have to be loaded to our *.exe (2 lines above);
+	std::cout << "SetSkinFunction" << std::endl;
+	std::cout << FormatLastError() << std::endl;
 	CHAR sz_file[MAX_PATH]{};
-	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_9; i++)
+	GetCurrentDirectory(MAX_PATH, sz_file);
+	std::cout << sz_file << std::endl;
+	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
 	{
 		HWND hButton = GetDlgItem(hwnd, i);
+		std::cout << "GetDlgItem()" << i << "\t" << FormatLastError() << std::endl;
 #ifdef DEBUG
 		MessageBox(hwnd, FormatLastError(), "Error", MB_OK | MB_ICONERROR);
 #endif // DEBUG
 
 		sprintf(sz_file, "ButtonsBMP\\%s\\button_%i.bmp", skin, i - IDC_BUTTON_0);
-		HANDLE hImage = LoadImage
+		/*HANDLE hImage = LoadImage
 		(
 			GetModuleHandle(NULL),
 			sz_file,
@@ -538,15 +548,35 @@ VOID SetSkin(HWND hwnd, LPSTR skin)
 			i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
 			g_i_BUTTON_SIZE,
 			LR_LOADFROMFILE
+		);*/
+		HANDLE hImage = LoadImage
+		(
+			hImages,
+			MAKEINTRESOURCE(i - IDC_BUTTON_0 + 100),
+			IMAGE_BITMAP,
+			i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+			i == IDC_BUTTON_EQUAL ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+			LR_SHARED/* | LR_LOADFROMFILE	*///!!!	This flag is necessary	LR_LOADFROMFILE doesn't work
 		);
+		std::cout << i << "\t" << FormatLastError() << std::endl;
 #ifdef DEBUG
 		MessageBox(hwnd, FormatLastError(), "Error", MB_OK | MB_ICONERROR);
 #endif // DEBUG
 
 		SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
+		std::cout << i << "\t" << FormatLastError() << std::endl;
+		std::cout << "\n-----------------------------------------\n" << std::endl;
 #ifdef DEBUG
 		MessageBox(hwnd, FormatLastError(), "Error", MB_OK | MB_ICONERROR);
 #endif // DEBUG
 
-	}
+}
+	FreeLibrary(hImages);
+}
+
+VOID pwd()
+{
+	CHAR sz_file[MAX_PATH]{};
+	GetCurrentDirectory(MAX_PATH, sz_file);
+	std::cout << sz_file << std::endl;
 }
