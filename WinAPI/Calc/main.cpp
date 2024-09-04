@@ -11,7 +11,7 @@ CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
 
 CONST INT g_i_BUTTON_SIZE = 64;
-CONST INT g_i_INTERVAL = 0;
+CONST INT g_i_INTERVAL = 5;
 CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 
 CONST INT g_i_DISPLAY_WIDTH = (g_i_BUTTON_SIZE + g_i_INTERVAL) * 5;
@@ -31,13 +31,14 @@ CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID PushButton(HWND parent, INT id);
 
-enum COLOR		{ BLUE, GREEN };
+enum COLOR		{ BLUE, GREEN, MERCURY };
 enum ELEMENT	{ WINDOW_BACKGROUND, DISPLAY_BACKGROUND, FOREGROUND};
 
 CONST COLORREF g_COLORS[][3] =
 {
 	{ RGB(0,0,200), RGB(0,0,100), RGB(255, 0,0) },
-	{ RGB(0,200,0), RGB(0,100,0), RGB(0, 255, 0)}
+	{ RGB(0,200,0), RGB(0,100,0), RGB(0, 255, 0)},
+	{ RGB(64,64,64), RGB(32,32,32), RGB(0, 255, 0)}
 };
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -487,14 +488,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubMenu, "Skins");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_GREEN, "Square green");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Square blue");
-		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Metal Mistral");
+		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_METAL_MISTRAL, "Metal Mistral");
 
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
 		case CM_SQUARE_BLUE:	SetSkinFromDLL(hwnd, (LPSTR)"square_blue"); color_scheme=BLUE; break;
 		case CM_SQUARE_GREEN:	SetSkinFromDLL(hwnd, (LPSTR)"square_green"); color_scheme=GREEN; break;
-		case CM_METAL_MISTRAL:	SetSkinFromDLL(hwnd, (LPSTR)"metal_mistral"); color_scheme=GREEN; break;
+		case CM_METAL_MISTRAL:	SetSkinFromDLL(hwnd, (LPSTR)"metal_mistral"); color_scheme=MERCURY; break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		}
 
