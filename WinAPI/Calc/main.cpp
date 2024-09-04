@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
 #include<Windows.h>
 #include<limits>
 #include<stdio.h>
@@ -93,10 +94,11 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 
 VOID SetSkin(HWND hwnd, LPSTR skin);
+VOID SetSkinFromDLL(HWND hwnd, LPSTR skin);
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	static CONST CHAR DEFAULT_SKIN[] = "square_green";
+	static CONST CHAR DEFAULT_SKIN[] = "metal_mistral";
 	static CHAR skin[MAX_PATH]{};
 	static COLOR color_scheme = COLOR::BLUE;
 
@@ -104,6 +106,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		std::cout << "Hello Console" << std::endl;
 		RECT rectWindow;
 		RECT rectClient;
 		GetWindowRect(hwnd, &rectWindow);
@@ -171,7 +176,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
-		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
+		//SetSkinFromDLL(hwnd, (LPSTR)DEFAULT_SKIN);
 		/*HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\button_0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
 		if (hImageDigit0 == NULL)
 		{
@@ -190,10 +195,24 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			MessageBox(hwnd, lpszMessageBuffer, "Error", MB_OK | MB_ICONERROR);
 		}
 		SendMessage(hButtonDigit0, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImageDigit0);*/
+		/////////////////////////////////////////////////////////////
+		/*HINSTANCE hButtons = LoadLibrary("metal_mistral.dll");
+		HBITMAP hBmpDigit0 = (HBITMAP)LoadImage
+		(
+			hButtons,
+			MAKEINTRESOURCE(100),
+			IMAGE_BITMAP,
+			g_i_BUTTON_DOUBLE_SIZE,
+			g_i_BUTTON_SIZE,
+			LR_SHARED
+		);
+		FreeLibrary(hButtons);
+		SendMessage(hButtonDigit0, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmpDigit0);*/
+		/////////////////////////////////////////////////////////////
 		CreateWindowEx
 		(
 			NULL, "Button", ".",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_BUTTON + g_i_BUTTON_DOUBLE_SIZE + g_i_INTERVAL,
 			g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3,
@@ -213,7 +232,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CreateWindowEx
 			(
 				NULL, "Button", sz_operation,
-				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 				g_i_START_X_OPERATIONS, g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL)*(3 - i),
 				g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -228,7 +247,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "<-",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON,
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -241,7 +260,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "C",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON + g_i_BUTTON_SIZE + g_i_INTERVAL,
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -255,7 +274,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "=",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 
 			g_i_START_X_CONTROL_BUTTONS, g_i_START_Y_BUTTON + g_i_BUTTON_DOUBLE_SIZE + g_i_INTERVAL,
 			g_i_BUTTON_SIZE, g_i_BUTTON_DOUBLE_SIZE,
@@ -266,8 +285,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 
-
-
+		SetSkinFromDLL(hwnd, (LPSTR)DEFAULT_SKIN);
 	}
 	break;
 	case WM_COMMAND:
@@ -469,12 +487,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubMenu, "Skins");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_GREEN, "Square green");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Square blue");
+		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Metal Mistral");
 
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
-		case CM_SQUARE_BLUE:	SetSkin(hwnd, (LPSTR)"square_blue"); color_scheme=BLUE; break;
-		case CM_SQUARE_GREEN:	SetSkin(hwnd, (LPSTR)"square_green"); color_scheme=GREEN; break;
+		case CM_SQUARE_BLUE:	SetSkinFromDLL(hwnd, (LPSTR)"square_blue"); color_scheme=BLUE; break;
+		case CM_SQUARE_GREEN:	SetSkinFromDLL(hwnd, (LPSTR)"square_green"); color_scheme=GREEN; break;
+		case CM_METAL_MISTRAL:	SetSkinFromDLL(hwnd, (LPSTR)"metal_mistral"); color_scheme=GREEN; break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		}
 
@@ -489,7 +509,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)sz_buffer);
 	}
 	break;
-	case WM_DESTROY:PostQuitMessage(0); break;
+	case WM_DESTROY:
+		FreeConsole();
+		PostQuitMessage(0);
+		break;
 	case WM_CLOSE:	DestroyWindow(hwnd); break;
 	default:		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
@@ -550,4 +573,26 @@ VOID SetSkin(HWND hwnd, LPSTR skin)
 #endif // DEBUG
 
 	}
+}
+
+VOID SetSkinFromDLL(HWND hwnd, LPSTR skin)
+{
+	HINSTANCE hButtons = LoadLibrary(skin);
+	CHAR sz_file[MAX_PATH]{};
+	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+	{
+		HWND hButton = GetDlgItem(hwnd, i);
+		std::cout << i << "\t" << FormatLastError() << std::endl;
+		HBITMAP hImage = (HBITMAP)LoadImage
+		(
+			hButtons,
+			MAKEINTRESOURCE(i - IDC_BUTTON_0 + 100),
+			IMAGE_BITMAP,
+			i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+			i == IDC_BUTTON_EQUAL ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+			LR_SHARED
+		);
+		SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
+	}
+	FreeLibrary(hButtons);
 }

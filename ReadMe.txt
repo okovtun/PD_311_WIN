@@ -1,5 +1,6 @@
 ﻿https://github.com/okovtun/PD_311_WIN.git
 https://www.youtube.com/playlist?list=PLeqyOOqxeiIPIp_IrqD5aXudCHnPU4vcA
+https://meet.google.com/mho-khdw-fhj
 
 Book:
 https://github.com/maybez/maybe/blob/master/Books/windows/Windows%20Via%20C%EF%BC%8FC++,Fifth%20Edition%20.pdf
