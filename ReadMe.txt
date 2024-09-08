@@ -11,6 +11,10 @@ TOREAD:
 https://learn.microsoft.com/en-us/windows/win32/winmsg/windowing
 
 TODO:
+1. Перенос по словам должен включаться/отключаться через пункт меню Format->Word wrap;
+2. Сохранить файл при помощи OPENFILEDIALOG;
+
+DONE:
 1. Изучить конвенции вызовов функций (Calling conventions);
 2. Текстовое поле должно адаптироваться под размер окна;
 
