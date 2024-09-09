@@ -82,6 +82,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hRichEdit20 = LoadLibrary("riched20.dll");
 	static CHAR szFileName[MAX_PATH] = "";
+	static BOOL bnChanged = FALSE;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -104,6 +105,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
+		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
 	}
 	break;
 	case WM_SIZE:
@@ -118,8 +120,18 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
+			BOOL cancel = FALSE;
+			if (bnChanged)
+			{
+				switch (MessageBox(hwnd, "Сохранить изменения?", "Файл был изменен", MB_YESNOCANCEL | MB_ICONQUESTION))
+				{
+				case IDYES:		SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+				case IDNO:		break;
+				case IDCANCEL:	cancel = TRUE;
+				}
+			}
 			//CHAR szFileName[MAX_PATH]{};
-
+			if (cancel)break;
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 
@@ -137,6 +149,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
+				bnChanged = FALSE;
 			}
 		}
 		break;
@@ -163,6 +176,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 			if (GetSaveFileName(&ofn))SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+		}
+		break;
+		/////////////////////////////////////////////////////////////////////
+		case IDC_EDIT:
+		{
+			if (HIWORD(wParam) == EN_CHANGE)	//Doesn't work with MULTILINE & WM_SETTEXT simultanously.
+			{
+				bnChanged = TRUE;
+				std::cout << "File was changed" << std::endl;
+			}
 		}
 		break;
 		}

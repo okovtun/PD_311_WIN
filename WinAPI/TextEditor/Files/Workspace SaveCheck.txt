@@ -1,2 +1,2 @@
-Workspace - File->Save check
-Сохраняем этот текст в уже существующий файл
+Workspace
+File changed check
