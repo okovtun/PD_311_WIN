@@ -81,6 +81,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hRichEdit20 = LoadLibrary("riched20.dll");
+	static CHAR szFileName[MAX_PATH] = "";
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -117,26 +118,51 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
-			CHAR szFileName[MAX_PATH]{};
+			//CHAR szFileName[MAX_PATH]{};
 
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0\0All files (*.*)\0*.*\0";
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus files (*.cpp | *.h)\0*.cpp;*.h\0All files (*.*)\0*.*\0";
+			ofn.lpstrDefExt = "txt";
 			//std::cout << "Hello" << std::endl;
 			//std::cout << sizeof("Hello") << std::endl;
 			ofn.lpstrFile = szFileName;
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-			ofn.lpstrDefExt = "txt";
 
 			if (GetOpenFileName(&ofn))
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
 			}
+		}
+		break;
+		case ID_FILE_SAVE:
+		{
+			if (strlen(szFileName))
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+			else
+				SendMessage(hwnd, WM_COMMAND, LOWORD(ID_FILE_SAVEAS), 0);
+		}
+		break;
+		case ID_FILE_SAVEAS:
+		{
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = hwnd;
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus files (*.cpp | *.h)\0*.cpp;*.h\0All files: (*.*)\0*.*\0";
+			//https://stackoverflow.com/questions/39130256/mfc-openfilename-structure-m-ofn-lpstrcustomfilter
+			/*To specify multiple filter patterns for a single display string,
+			use a semicolon to separate the patterns (for example, "*.TXT;*.DOC;*.BAK").*/
+			ofn.lpstrDefExt = "txt";
+			ofn.lpstrFile = szFileName;
+			ofn.nMaxFile = MAX_PATH;
+			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+			if (GetSaveFileName(&ofn))SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 		}
 		break;
 		}
