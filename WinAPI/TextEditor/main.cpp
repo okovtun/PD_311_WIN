@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<Windows.h>
 #include<Richedit.h>
+#include<CommCtrl.h>
 #include<iostream>
 #include"resource.h"
 
@@ -18,6 +19,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 {
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
+	setlocale(LC_ALL, "");
+	system("chcp 1251");
 	//1)Регистрация класса окна:
 	WNDCLASSEX wClass;
 	ZeroMemory(&wClass, sizeof(WNDCLASSEX));
@@ -81,12 +84,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hRichEdit20 = LoadLibrary("riched20.dll");
+	static HINSTANCE comCtrl32 = LoadLibrary("ComCtl32.dll");
+	//static INITCOMMONCONTROLSEX icce;
+	static CHAR sz_title[MAX_PATH]{};
 	static CHAR szFileName[MAX_PATH] = "";
 	static BOOL bnChanged = FALSE;
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
+		//InitCommonControlsEx(&icce);
 		RECT windowRect;
 		RECT clientRect;
 		GetWindowRect(hwnd, &windowRect);
@@ -106,13 +113,46 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
+
+		//				Status bar:
+		HWND hStatus = CreateWindowEx
+		(
+			NULL, STATUSCLASSNAME, "Status bar",
+			WS_CHILD | WS_VISIBLE,
+			CW_USEDEFAULT, CW_USEDEFAULT,
+			CW_USEDEFAULT, CW_USEDEFAULT,
+			hwnd,
+			(HMENU)IDC_STATUS,
+			NULL,
+			NULL
+		);
+		//1) Filepath;
+		//2) Save status;
+		//3) Number of words;
+		//4) Window size;
+		//5) File size;
+		//6) Creation date;
+		//7) Date of change;
+		INT dimensions[] = { 500, 600, 700, 800, 900, 1000, -1 };
+		//INT dimensions[] = { -1, -1, -1, -1, -1, -1, -1 };
+		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
 	break;
 	case WM_SIZE:
 	{
+		RECT windowRect;
 		RECT clientRect;
+		RECT statusRect;
+		GetWindowRect(hwnd, &windowRect);
 		GetClientRect(hwnd, &clientRect);
-		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, clientRect.right - 20, clientRect.bottom - 20, TRUE);
+		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &statusRect);
+		std::cout << "Window:" << windowRect.left << tab << windowRect.top << tab << windowRect.right << tab << windowRect.bottom << std::endl;
+		std::cout << "Client:" << clientRect.left << tab << clientRect.top << tab << clientRect.right << tab << clientRect.bottom << std::endl;
+		std::cout << "Status:" << statusRect.left << tab << statusRect.top << tab << statusRect.right << tab << statusRect.bottom << std::endl;
+		std::cout << "\n--------------------------------------------\n";
+		DWORD dwStatusHeight = statusRect.bottom - statusRect.top;
+		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, clientRect.right - 20, clientRect.bottom - 20 - dwStatusHeight, TRUE);
+		MoveWindow(GetDlgItem(hwnd, IDC_STATUS), 0, 0, 0, 0, TRUE);
 	}
 	break;
 	case WM_COMMAND:
@@ -150,6 +190,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
 				bnChanged = FALSE;
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
+
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+				std::cout << sz_title << std::endl;
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
 			}
 		}
 		break;
@@ -159,6 +204,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 			else
 				SendMessage(hwnd, WM_COMMAND, LOWORD(ID_FILE_SAVEAS), 0);
+			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
 		}
 		break;
 		case ID_FILE_SAVEAS:
@@ -175,7 +221,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ofn.lpstrFile = szFileName;
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-			if (GetSaveFileName(&ofn))SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+			if (GetSaveFileName(&ofn))
+			{
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
+
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+				std::cout << sz_title << std::endl;
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+			}
 		}
 		break;
 		/////////////////////////////////////////////////////////////////////
@@ -184,13 +239,34 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE)	//Doesn't work with MULTILINE & WM_SETTEXT simultanously.
 			{
 				bnChanged = TRUE;
-				std::cout << "File was changed" << std::endl;
+				//std::cout << "File was changed" << std::endl;
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Изменен");
+
+				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+				HWND hStatus = GetDlgItem(hwnd, IDC_STATUS);
+				DWORD dwTextLen = SendMessage(hEdit, WM_GETTEXTLENGTH, 0, 0);
+				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen+1);
+				SendMessage(hEdit, WM_GETTEXT, dwTextLen + 1, (LPARAM)lpstrBuffer);
+
+				//https://legacy.cplusplus.com/reference/cstring/strtok/
+				CHAR delimiters[] = " ,.!?;-()[]<>{}\"\':\\/\n";
+				int i = 0;
+				for (char* pch = strtok(lpstrBuffer, delimiters); pch; pch = strtok(NULL, delimiters))
+				{
+					std::cout << pch << "\t" << strlen(pch) << std::endl;
+					i++;
+				}
+				CHAR sz_status[MAX_PATH]{};
+				sprintf(sz_status, "%i %s", i, "слов");	SendMessage(hStatus, SB_SETTEXT, 2, (LPARAM)sz_status);
+				sprintf(sz_status, "%s %i", "длина: ", strlen);	SendMessage(hStatus, SB_SETTEXT, 3, (LPARAM)sz_status);
+				GlobalFree(lpstrBuffer);
 			}
 		}
 		break;
 		}
 		break;
 	case WM_DESTROY:
+		FreeLibrary(comCtrl32);
 		FreeLibrary(hRichEdit20);
 		PostQuitMessage(0);
 		break;
