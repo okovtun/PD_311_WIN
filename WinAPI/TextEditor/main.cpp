@@ -12,8 +12,8 @@ CONST CHAR g_sz_WINDOW_CLASS[] = "Text Editor (PD_311)";
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 CHAR* FormatLastError();
-BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName,  CHAR sz_title[]);
-BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName,CHAR sz_title[]);
+BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName, CHAR sz_title[]);
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName, CHAR sz_title[]);
 LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
 VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[]);
 
@@ -52,7 +52,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	//2)Создание окна
 	HWND hwnd = CreateWindowEx
 	(
-		NULL,
+		WS_EX_ACCEPTFILES,
 		g_sz_WINDOW_CLASS,
 		g_sz_WINDOW_CLASS,
 		WS_OVERLAPPEDWINDOW,
@@ -138,6 +138,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		INT dimensions[] = { 500, 600, 700, 800, 900, 1100, -1 };
 		//INT dimensions[] = { -1, -1, -1, -1, -1, -1, -1 };
 		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
+
+		DragAcceptFiles(hwnd, TRUE);
 	}
 	break;
 	case WM_SIZE:
@@ -155,6 +157,15 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DWORD dwStatusHeight = statusRect.bottom - statusRect.top;
 		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, clientRect.right - 20, clientRect.bottom - 20 - dwStatusHeight, TRUE);
 		MoveWindow(GetDlgItem(hwnd, IDC_STATUS), 0, 0, 0, 0, TRUE);
+	}
+	break;
+	case WM_DROPFILES:
+	{
+		DragQueryFile((HDROP)wParam, 0, szFileName, MAX_PATH);
+		std::cout << "WM_DROPFILES: " << szFileName << std::endl;
+		HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+		LoadTextFileToEdit(hEdit, szFileName, sz_title);
+		DragFinish((HDROP)wParam);
 	}
 	break;
 	case WM_COMMAND:
