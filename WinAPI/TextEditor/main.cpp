@@ -14,6 +14,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 CHAR* FormatLastError();
 BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
+LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -133,7 +135,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//5) File size;
 		//6) Creation date;
 		//7) Date of change;
-		INT dimensions[] = { 500, 600, 700, 800, 900, 1000, -1 };
+		INT dimensions[] = { 500, 600, 700, 800, 900, 1100, -1 };
 		//INT dimensions[] = { -1, -1, -1, -1, -1, -1, -1 };
 		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
@@ -195,6 +197,37 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
 				std::cout << sz_title << std::endl;
 				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+
+				WIN32_FIND_DATA fileData;
+				ZeroMemory(&fileData, sizeof(fileData));
+				HANDLE hFile = FindFirstFile(szFileName, &fileData);
+				std::cout << "\n==================================\n" << std::endl;
+				std::cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t" << "\n";
+				std::cout << "\n==================================\n" << std::endl;
+				CHAR sz_buffer[MAX_PATH]{};
+				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+				/*FILETIME localTime;
+				ZeroMemory(&localTime, sizeof(localTime));
+				FileTimeToLocalFileTime(&fileData.ftCreationTime, &localTime);
+				SYSTEMTIME sysTime;
+				ZeroMemory(&sysTime, sizeof(sysTime));
+				FileTimeToSystemTime(&localTime, &sysTime);
+				ZeroMemory(sz_buffer, MAX_PATH);
+				sprintf
+				(
+					sz_buffer,
+					"%s:%02d.%02d.%02d %02d:%02d:%02d",
+					"Дата создания: ",
+					sysTime.wYear, sysTime.wMonth, sysTime.wDay,
+					sysTime.wHour, sysTime.wMinute, sysTime.wSecond
+				);
+				std::cout << sz_buffer << std::endl;*/
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
+					(LPARAM)FormatFileTime(fileData.ftCreationTime, "Дата создания", sz_buffer));
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
+					(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Дата изменения", sz_buffer));
+
 			}
 		}
 		break;
@@ -245,7 +278,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				HWND hStatus = GetDlgItem(hwnd, IDC_STATUS);
 				DWORD dwTextLen = SendMessage(hEdit, WM_GETTEXTLENGTH, 0, 0);
-				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen+1);
+				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen + 1);
 				SendMessage(hEdit, WM_GETTEXT, dwTextLen + 1, (LPARAM)lpstrBuffer);
 
 				//https://legacy.cplusplus.com/reference/cstring/strtok/
@@ -258,7 +291,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				CHAR sz_status[MAX_PATH]{};
 				sprintf(sz_status, "%i %s", i, "слов");	SendMessage(hStatus, SB_SETTEXT, 2, (LPARAM)sz_status);
-				sprintf(sz_status, "%s %i", "длина: ", strlen);	SendMessage(hStatus, SB_SETTEXT, 3, (LPARAM)sz_status);
+				sprintf(sz_status, "%s %i", "длина: ", dwTextLen);	SendMessage(hStatus, SB_SETTEXT, 3, (LPARAM)sz_status);
 				GlobalFree(lpstrBuffer);
 			}
 		}
@@ -341,4 +374,31 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
 		CloseHandle(hFile);
 	}
 	return bSuccess;
+}
+
+LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[])
+{
+	//CHAR sz_buffer[MAX_PATH]{};
+	ZeroMemory(sz_buffer, MAX_PATH);
+	FILETIME localTime;
+	ZeroMemory(&localTime, sizeof(localTime));
+	FileTimeToLocalFileTime(&filetime, &localTime);
+	SYSTEMTIME sysTime;
+	ZeroMemory(&sysTime, sizeof(sysTime));
+	FileTimeToSystemTime(&localTime, &sysTime);
+	sprintf
+	(
+		sz_buffer,
+		"%s:%02d.%02d.%02d %02d:%02d:%02d",
+		sz_message,
+		sysTime.wYear, sysTime.wMonth, sysTime.wDay,
+		sysTime.wHour, sysTime.wMinute, sysTime.wSecond
+	);
+	std::cout << sz_buffer << std::endl;
+	return sz_buffer;
+}
+
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[])
+{
+
 }
