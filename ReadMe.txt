@@ -10,6 +10,9 @@ https://777russia.ru/book/uploads/%D0%9F%D0%A0%D0%9E%D0%93%D0%A0%D0%90%D0%9C%D0%
 TOREAD:
 https://learn.microsoft.com/en-us/windows/win32/winmsg/windowing
 
+Commit convention:
+https://www.conventionalcommits.org/en/v1.0.0/
+
 TODO:
 1. Перенос по словам должен включаться/отключаться через пункт меню Format->Word wrap;
 2. Сохранить файл при помощи OPENFILEDIALOG;	DONE

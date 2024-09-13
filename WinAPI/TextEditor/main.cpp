@@ -15,7 +15,7 @@ CHAR* FormatLastError();
 BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
 LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
-VOID SetFileDataToStatusBar(CONST CHAR szFileName[]);
+VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -193,41 +193,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				LoadTextFileToEdit(hEdit, szFileName);
 				bnChanged = FALSE;
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
-
-				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
-				std::cout << sz_title << std::endl;
-				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
-
-				WIN32_FIND_DATA fileData;
-				ZeroMemory(&fileData, sizeof(fileData));
-				HANDLE hFile = FindFirstFile(szFileName, &fileData);
-				std::cout << "\n==================================\n" << std::endl;
-				std::cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t" << "\n";
-				std::cout << "\n==================================\n" << std::endl;
-				CHAR sz_buffer[MAX_PATH]{};
-				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
-				/*FILETIME localTime;
-				ZeroMemory(&localTime, sizeof(localTime));
-				FileTimeToLocalFileTime(&fileData.ftCreationTime, &localTime);
-				SYSTEMTIME sysTime;
-				ZeroMemory(&sysTime, sizeof(sysTime));
-				FileTimeToSystemTime(&localTime, &sysTime);
-				ZeroMemory(sz_buffer, MAX_PATH);
-				sprintf
-				(
-					sz_buffer,
-					"%s:%02d.%02d.%02d %02d:%02d:%02d",
-					"Дата создания: ",
-					sysTime.wYear, sysTime.wMonth, sysTime.wDay,
-					sysTime.wHour, sysTime.wMinute, sysTime.wSecond
-				);
-				std::cout << sz_buffer << std::endl;*/
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
-					(LPARAM)FormatFileTime(fileData.ftCreationTime, "Дата создания", sz_buffer));
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
-					(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Дата изменения", sz_buffer));
-
+				std::cout << "Title before: " << sz_title << std::endl;
+				SetFileDataToStatusBar(hwnd, szFileName, sz_title);
+				std::cout << "Title after: " << sz_title << std::endl;
 			}
 		}
 		break;
@@ -398,7 +366,41 @@ LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[
 	return sz_buffer;
 }
 
-VOID SetFileDataToStatusBar(CONST CHAR szFileName[])
+VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[])
 {
+	//CHAR sz_title[MAX_PATH]{};
+	sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+	std::cout << sz_title << std::endl;
+	SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+
+	WIN32_FIND_DATA fileData;
+	ZeroMemory(&fileData, sizeof(fileData));
+	HANDLE hFile = FindFirstFile(szFileName, &fileData);
+	std::cout << "\n==================================\n" << std::endl;
+	std::cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t" << "\n";
+	std::cout << "\n==================================\n" << std::endl;
+	CHAR sz_buffer[MAX_PATH]{};
+	sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+	/*FILETIME localTime;
+	ZeroMemory(&localTime, sizeof(localTime));
+	FileTimeToLocalFileTime(&fileData.ftCreationTime, &localTime);
+	SYSTEMTIME sysTime;
+	ZeroMemory(&sysTime, sizeof(sysTime));
+	FileTimeToSystemTime(&localTime, &sysTime);
+	ZeroMemory(sz_buffer, MAX_PATH);
+	sprintf
+	(
+		sz_buffer,
+		"%s:%02d.%02d.%02d %02d:%02d:%02d",
+		"Дата создания: ",
+		sysTime.wYear, sysTime.wMonth, sysTime.wDay,
+		sysTime.wHour, sysTime.wMinute, sysTime.wSecond
+	);
+	std::cout << sz_buffer << std::endl;*/
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
+		(LPARAM)FormatFileTime(fileData.ftCreationTime, "Дата создания", sz_buffer));
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
+		(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Дата изменения", sz_buffer));
 
 }
