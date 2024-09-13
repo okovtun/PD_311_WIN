@@ -12,8 +12,8 @@ CONST CHAR g_sz_WINDOW_CLASS[] = "Text Editor (PD_311)";
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 CHAR* FormatLastError();
-BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName);
-BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
+BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName,  CHAR sz_title[]);
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName,CHAR sz_title[]);
 LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
 VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[]);
 
@@ -190,7 +190,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (GetOpenFileName(&ofn))
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
-				LoadTextFileToEdit(hEdit, szFileName);
+				LoadTextFileToEdit(hEdit, szFileName, sz_title);
 				bnChanged = FALSE;
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
 				std::cout << "Title before: " << sz_title << std::endl;
@@ -202,7 +202,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_SAVE:
 		{
 			if (strlen(szFileName))
-				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName, sz_title);
 			else
 				SendMessage(hwnd, WM_COMMAND, LOWORD(ID_FILE_SAVEAS), 0);
 			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
@@ -224,7 +224,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 			if (GetSaveFileName(&ofn))
 			{
-				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName, sz_title);
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
 
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
@@ -295,7 +295,7 @@ CHAR* FormatLastError()
 	return lpszBuffer;
 }
 
-BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName)
+BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName, CHAR sz_title[])
 {
 	BOOL bSuccess = FALSE;
 	HANDLE hFile = CreateFile(lpszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, 0);
@@ -317,9 +317,10 @@ BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName)
 			CloseHandle(hFile);
 		}
 	}
+	SetFileDataToStatusBar(GetParent(hEdit), lpszFileName, sz_title);
 	return bSuccess;
 }
-BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName, CHAR sz_title[])
 {
 	BOOL bSuccess = FALSE;
 	HANDLE hFile = CreateFile(lpszFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -341,6 +342,7 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
 		}
 		CloseHandle(hFile);
 	}
+	SetFileDataToStatusBar(GetParent(hEdit), lpszFileName, sz_title);
 	return bSuccess;
 }
 
