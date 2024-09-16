@@ -10,11 +10,17 @@ using System.Windows.Forms;
 
 namespace Clock
 {
-	public partial class Form1 : Form
+	public partial class MainForm : Form
 	{
-		public Form1()
+		public MainForm()
 		{
 			InitializeComponent();
+		}
+
+		private void timer1_Tick(object sender, EventArgs e)
+		{
+			label1.Text = DateTime.Now.ToString("hh:mm:ss tt");
+			if (cbShowDate.Checked) label1.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
 		}
 	}
 }
