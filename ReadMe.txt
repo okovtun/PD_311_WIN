@@ -10,6 +10,9 @@ https://777russia.ru/book/uploads/%D0%9F%D0%A0%D0%9E%D0%93%D0%A0%D0%90%D0%9C%D0%
 TOREAD:
 https://learn.microsoft.com/en-us/windows/win32/winmsg/windowing
 
+Book:
+https://www.frolov-lib.ru/books/bsp/v22/ch5_1.html
+
 Commit convention:
 https://www.conventionalcommits.org/en/v1.0.0/
 
