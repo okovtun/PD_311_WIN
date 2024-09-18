@@ -72,5 +72,23 @@ namespace Clock
 		{
 			SetControlsVisibility(!controlsVisible);
 		}
+
+		private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ColorDialog dialog = new ColorDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				labelTime.BackColor = dialog.Color;
+			}
+		}
+
+		private void fregroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ColorDialog dialog = new ColorDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				labelTime.ForeColor = dialog.Color;
+			}
+		}
 	}
 }
