@@ -16,7 +16,12 @@ namespace Clock
 		public MainForm()
 		{
 			InitializeComponent();
-			controlsVisible = true;
+			//controlsVisible = true;
+			SetControlsVisibility(false);
+			this.StartPosition = FormStartPosition.Manual;
+			int start_x = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
+			int start_y = 25;
+			this.Location = new Point(start_x, start_y);
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
@@ -39,6 +44,7 @@ namespace Clock
 			btnHideControls.Visible = visible;
 			labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
 			showControlsToolStripMenuItem.Checked = visible;
+			this.controlsVisible = visible;
 		}
 
 		private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -60,6 +66,11 @@ namespace Clock
 		{
 			this.controlsVisible = showControlsToolStripMenuItem.Checked;
 			SetControlsVisibility(controlsVisible);
+		}
+
+		private void labelTime_DoubleClick(object sender, EventArgs e)
+		{
+			SetControlsVisibility(!controlsVisible);
 		}
 	}
 }
