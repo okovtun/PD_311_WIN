@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Text;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Clock
 {
@@ -26,10 +28,22 @@ namespace Clock
 
 			///////////////////////////////
 			///
-			PrivateFontCollection pfc = new PrivateFontCollection();
-			pfc.AddFontFile();
+
+			AllocConsole();
+			CreateCustomFont();
 		}
-		void CreateCustom
+		void CreateCustomFont()
+		{
+			Console.WriteLine(Directory.GetCurrentDirectory());
+			Directory.SetCurrentDirectory("..\\..\\Fonts");
+			Console.WriteLine(Directory.GetCurrentDirectory());
+
+			PrivateFontCollection pfc = new PrivateFontCollection();
+			pfc.AddFontFile("Terminat.ttf");
+			Font font = new Font(pfc.Families[0], labelTime.Font.Size);
+			pfc.Dispose();
+			labelTime.Font = font;
+		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -97,5 +111,13 @@ namespace Clock
 				labelTime.ForeColor = dialog.Color;
 			}
 		}
+		/// ///////////////////////////////////
+		const UInt32 StdOutputHandle = 0xFFFFFFF5;
+		[DllImport("kernel32.dll")]
+		static extern IntPtr GetStdHandle(UInt32 handle);
+		[DllImport("kernel32.dll")]
+		static extern void SetStdHandle(UInt32 nStdHandle, IntPtr handle);
+		[DllImport("kernel32.dll")]
+		static extern bool AllocConsole();
 	}
 }
