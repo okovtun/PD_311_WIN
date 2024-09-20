@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Text;
 
 namespace Clock
 {
@@ -22,7 +23,13 @@ namespace Clock
 			int start_x = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int start_y = 25;
 			this.Location = new Point(start_x, start_y);
+
+			///////////////////////////////
+			///
+			PrivateFontCollection pfc = new PrivateFontCollection();
+			pfc.AddFontFile();
 		}
+		void CreateCustom
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
