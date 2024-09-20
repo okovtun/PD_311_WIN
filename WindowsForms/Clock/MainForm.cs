@@ -119,5 +119,11 @@ namespace Clock
 		static extern void SetStdHandle(UInt32 nStdHandle, IntPtr handle);
 		[DllImport("kernel32.dll")]
 		static extern bool AllocConsole();
+
+		private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ChooseFont dialog = new ChooseFont();
+			dialog.ShowDialog();
+		}
 	}
 }
