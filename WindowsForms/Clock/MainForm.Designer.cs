@@ -46,6 +46,7 @@
 			this.cbShowDate = new System.Windows.Forms.CheckBox();
 			this.btnHideControls = new System.Windows.Forms.Button();
 			this.notifyIconSystemTray = new System.Windows.Forms.NotifyIcon(this.components);
+			this.cbPin = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,7 +55,7 @@
 			this.labelTime.AutoSize = true;
 			this.labelTime.ContextMenuStrip = this.contextMenuStrip1;
 			this.labelTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.labelTime.Location = new System.Drawing.Point(27, 25);
+			this.labelTime.Location = new System.Drawing.Point(27, 71);
 			this.labelTime.Name = "labelTime";
 			this.labelTime.Size = new System.Drawing.Size(144, 51);
 			this.labelTime.TabIndex = 0;
@@ -82,7 +83,7 @@
 			this.topmostToolStripMenuItem.Name = "topmostToolStripMenuItem";
 			this.topmostToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.topmostToolStripMenuItem.Text = "Topmost";
-			this.topmostToolStripMenuItem.Click += new System.EventHandler(this.topmostToolStripMenuItem_Click);
+			this.topmostToolStripMenuItem.CheckedChanged += new System.EventHandler(this.topmostToolStripMenuItem_CheckedChanged);
 			// 
 			// showControlsToolStripMenuItem
 			// 
@@ -186,11 +187,29 @@
 			this.notifyIconSystemTray.Visible = true;
 			this.notifyIconSystemTray.DoubleClick += new System.EventHandler(this.notifyIconSystemTray_DoubleClick);
 			// 
+			// cbPin
+			// 
+			this.cbPin.Appearance = System.Windows.Forms.Appearance.Button;
+			this.cbPin.AutoSize = true;
+			this.cbPin.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cbPin.BackgroundImage")));
+			this.cbPin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.cbPin.FlatAppearance.BorderSize = 0;
+			this.cbPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.cbPin.Location = new System.Drawing.Point(199, 12);
+			this.cbPin.MaximumSize = new System.Drawing.Size(64, 64);
+			this.cbPin.MinimumSize = new System.Drawing.Size(64, 64);
+			this.cbPin.Name = "cbPin";
+			this.cbPin.Size = new System.Drawing.Size(64, 64);
+			this.cbPin.TabIndex = 3;
+			this.cbPin.UseVisualStyleBackColor = true;
+			this.cbPin.CheckedChanged += new System.EventHandler(this.cbPin_CheckedChanged);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(354, 450);
+			this.Controls.Add(this.cbPin);
 			this.Controls.Add(this.btnHideControls);
 			this.Controls.Add(this.cbShowDate);
 			this.Controls.Add(this.labelTime);
@@ -221,6 +240,7 @@
 		private System.Windows.Forms.ToolStripMenuItem fregroundColorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem chooseFontToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem topmostToolStripMenuItem;
+		private System.Windows.Forms.CheckBox cbPin;
 	}
 }
 

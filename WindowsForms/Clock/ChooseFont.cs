@@ -14,6 +14,7 @@ namespace Clock
 {
 	public partial class ChooseFont : Form
 	{
+		MainForm owner;
 		public ChooseFont()
 		{
 			InitializeComponent();
@@ -27,23 +28,37 @@ namespace Clock
 			{
 				comboBoxFonts.Items.Add(files[i].Split('\\').Last());
 			}
-
+			comboBoxFonts.SelectedIndex = 0;
 			//string[] extensions = new string[] { ".ttf", ".otf" };
 			//string[] files = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(item=>extensions.Contains(item.Split('.').Last()))
+		}
+		public ChooseFont(MainForm owner) : this()
+		{
+			this.owner = owner;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			//this.Parent.la
+			owner.LabelTime.Font = labelSample.Font;
 		}
 
 		private void comboBoxFonts_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetFontParameters();
+		}
+		void SetFontParameters()
 		{
 			PrivateFontCollection pfc = new PrivateFontCollection();
 			pfc.AddFontFile(comboBoxFonts.SelectedItem.ToString());
 			Font font = new Font(pfc.Families[0], Convert.ToUInt32(numericUpDownFontSize.Value));
 			pfc.Dispose();
 			labelSample.Font = font;
+		}
+
+		private void buttonApply_Click(object sender, EventArgs e)
+		{
+			SetFontParameters();
 		}
 	}
 }

@@ -10,12 +10,15 @@ using System.Windows.Forms;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Threading;
 
 namespace Clock
 {
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
+		public System.Windows.Forms.Label LabelTime { get => labelTime; }
+		ChooseFont chooseFontDialog;
 		public MainForm()
 		{
 			InitializeComponent();
@@ -28,9 +31,12 @@ namespace Clock
 			this.TopMost = topmostToolStripMenuItem.Checked = true;
 			///////////////////////////////
 			///
+			cbPin.Checked = true;
 
 			AllocConsole();
 			CreateCustomFont();
+
+			chooseFontDialog = new ChooseFont(this);
 		}
 		void CreateCustomFont()
 		{
@@ -66,6 +72,7 @@ namespace Clock
 			labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
 			showControlsToolStripMenuItem.Checked = visible;
 			this.controlsVisible = visible;
+			cbPin.Visible = visible;
 		}
 
 		private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -122,24 +129,39 @@ namespace Clock
 
 		private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ChooseFont dialog = new ChooseFont();
-			dialog.ShowDialog();
+			//ChooseFont chooseFontDialog = new ChooseFont(this);
+			chooseFontDialog.ShowDialog();
 		}
 
-		private void topmostToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.TopMost = topmostToolStripMenuItem.Checked;
-		}
+		//private void topmostToolStripMenuItem_Click(object sender, EventArgs e)
+		//{
+		//	this.TopMost = topmostToolStripMenuItem.Checked;
+		//}
 
 		private void notifyIconSystemTray_DoubleClick(object sender, EventArgs e)
 		{
 			Console.WriteLine("Notofy Icon dblclick");
 			//topmostToolStripMenuItem_Click(sender, e);
-			if (this.TopMost == false)
-			{
-				this.TopMost = true;
-				this.TopMost = false;
-			}
+			//if (this.TopMost == false)
+			//{
+			//	this.TopMost = true;
+			//	this.TopMost = false;
+			//}
+			topmostToolStripMenuItem.Checked = !topmostToolStripMenuItem.Checked;
+			topmostToolStripMenuItem.Checked = !topmostToolStripMenuItem.Checked;
+		}
+
+		private void topmostToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			this.TopMost = topmostToolStripMenuItem.Checked;
+			cbPin.Checked = topmostToolStripMenuItem.Checked;
+		}
+
+		private void cbPin_CheckedChanged(object sender, EventArgs e)
+		{
+			//cbPin.Checked = !cbPin.Checked;
+			topmostToolStripMenuItem.Checked = cbPin.Checked;
+			cbPin.BackgroundImage = cbPin.Checked ? Properties.Resources.pinned.ToBitmap() : Properties.Resources.note_thepin.ToBitmap();
 		}
 	}
 }
