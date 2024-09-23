@@ -25,7 +25,7 @@ namespace Clock
 			int start_x = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int start_y = 25;
 			this.Location = new Point(start_x, start_y);
-
+			this.TopMost = topmostToolStripMenuItem.Checked = true;
 			///////////////////////////////
 			///
 
@@ -61,7 +61,7 @@ namespace Clock
 			this.TransparencyKey = visible ? Color.Empty : this.BackColor;
 			this.ShowInTaskbar = visible;
 			this.cbShowDate.Visible = visible;
-			this.TopMost = !visible;
+			//this.TopMost = !visible;
 			btnHideControls.Visible = visible;
 			labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
 			showControlsToolStripMenuItem.Checked = visible;
@@ -124,6 +124,22 @@ namespace Clock
 		{
 			ChooseFont dialog = new ChooseFont();
 			dialog.ShowDialog();
+		}
+
+		private void topmostToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.TopMost = topmostToolStripMenuItem.Checked;
+		}
+
+		private void notifyIconSystemTray_DoubleClick(object sender, EventArgs e)
+		{
+			Console.WriteLine("Notofy Icon dblclick");
+			//topmostToolStripMenuItem_Click(sender, e);
+			if (this.TopMost == false)
+			{
+				this.TopMost = true;
+				this.TopMost = false;
+			}
 		}
 	}
 }
