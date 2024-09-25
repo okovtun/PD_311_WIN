@@ -32,6 +32,7 @@
 			this.dateTimePickerAlarmTime = new System.Windows.Forms.DateTimePicker();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonBrowse = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// dateTimePickerAlarmTime
@@ -66,11 +67,22 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
+			// buttonBrowse
+			// 
+			this.buttonBrowse.Location = new System.Drawing.Point(13, 147);
+			this.buttonBrowse.Name = "buttonBrowse";
+			this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
+			this.buttonBrowse.TabIndex = 3;
+			this.buttonBrowse.Text = "Browse";
+			this.buttonBrowse.UseVisualStyleBackColor = true;
+			this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+			// 
 			// AlarmDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(396, 182);
+			this.Controls.Add(this.buttonBrowse);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.dateTimePickerAlarmTime);
@@ -88,5 +100,6 @@
 		private System.Windows.Forms.DateTimePicker dateTimePickerAlarmTime;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.Button buttonBrowse;
 	}
 }

@@ -20,7 +20,9 @@ namespace Clock
 		public System.Windows.Forms.Label LabelTime { get => labelTime; }
 		ChooseFont chooseFontDialog;
 		AlarmDialog alarmDialog;
+		public string AlarmFile { get; set; }
 		public DateTime AlarmTime { get; set; }
+		public System.Windows.Forms.NotifyIcon NotifyIcon { get => notifyIconSystemTray; }
 		public MainForm()
 		{
 			InitializeComponent();
@@ -70,7 +72,9 @@ namespace Clock
 			Console.WriteLine($"{AlarmTime}\t{currentTime}");
 			if (AlarmTime.Equals(currentTime))
 			{
-				MessageBox.Show("Пора вставать");
+				//MessageBox.Show("Пора вставать");
+				axWindowsMediaPlayer.URL = AlarmFile;
+				axWindowsMediaPlayer.Ctlcontrols.play();
 			}
 		}
 
@@ -90,6 +94,8 @@ namespace Clock
 			showControlsToolStripMenuItem.Checked = visible;
 			this.controlsVisible = visible;
 			cbPin.Visible = visible;
+
+			axWindowsMediaPlayer.Visible = visible;
 		}
 
 		private void quitToolStripMenuItem_Click(object sender, EventArgs e)
