@@ -19,6 +19,8 @@ namespace Clock
 		bool controlsVisible;
 		public System.Windows.Forms.Label LabelTime { get => labelTime; }
 		ChooseFont chooseFontDialog;
+		AlarmDialog alarmDialog;
+		public DateTime AlarmTime { get; set; }
 		public MainForm()
 		{
 			InitializeComponent();
@@ -37,6 +39,8 @@ namespace Clock
 			CreateCustomFont();
 
 			chooseFontDialog = new ChooseFont(this);
+			alarmDialog = new AlarmDialog(this);
+			//AlarmTime = DateTime.Now;
 		}
 		void CreateCustomFont()
 		{
@@ -55,6 +59,12 @@ namespace Clock
 		{
 			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			if (cbShowDate.Checked) labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
+
+			//			Alarm:
+			if (AlarmTime.ToString("hh:mm:ss tt") == labelTime.Text)
+			{
+				MessageBox.Show("Пора вставать");
+			}
 		}
 
 		private void btnHideControls_Click(object sender, EventArgs e)
@@ -162,6 +172,11 @@ namespace Clock
 			//cbPin.Checked = !cbPin.Checked;
 			topmostToolStripMenuItem.Checked = cbPin.Checked;
 			cbPin.BackgroundImage = cbPin.Checked ? Properties.Resources.pinned.ToBitmap() : Properties.Resources.note_thepin.ToBitmap();
+		}
+
+		private void alarmToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			alarmDialog.ShowDialog();
 		}
 	}
 }
