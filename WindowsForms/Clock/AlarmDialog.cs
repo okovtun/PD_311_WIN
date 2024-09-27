@@ -39,5 +39,19 @@ namespace Clock
 			dialog.ShowDialog();
 			filename = dialog.FileName;
 		}
+
+		private void buttonAdd_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				checkedListBoxPendingAlarms.Items.Add(new Alarm(dateTimePickerAlarmTime.Value, filename), true);
+				List<Alarm> alarms = new List<Alarm>(checkedListBoxPendingAlarms.Items.OfType<Alarm>().ToList());
+				Console.WriteLine(alarms.Min());
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+		}
 	}
 }

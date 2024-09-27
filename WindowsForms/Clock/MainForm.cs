@@ -52,6 +52,10 @@ namespace Clock
 
 			StreamWriter sw = new StreamWriter("session.log");
 		}
+		~MainForm()
+		{
+			sw.Close();
+		}
 		void CreateCustomFont()
 		{
 			Console.WriteLine(Directory.GetCurrentDirectory());
@@ -85,14 +89,14 @@ namespace Clock
 			//Console.WriteLine($"{AlarmTime.TimeOfDay}\t{DateTime.Now.TimeOfDay}");
 			DateTime currentTime = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerSecond);
 			//https://stackoverflow.com/questions/1004698/how-to-truncate-milliseconds-off-of-a-net-datetime#:~:text=%2F%2FRemove%20milliseconds%20DateTime%20date,mm%3Ass%22%2C%20null)%3B
-			Console.WriteLine($"{AlarmTime}\t{currentTime}");
+			//Console.WriteLine($"{AlarmTime}\t{currentTime}");
 			if (AlarmTime.Equals(currentTime))
 			{
 				//MessageBox.Show("Пора вставать");
 				axWindowsMediaPlayer.URL = AlarmFile;
 				axWindowsMediaPlayer.Ctlcontrols.play();
 			}
-			Console.WriteLine(Directory.GetCurrentDirectory());
+			//Console.WriteLine(Directory.GetCurrentDirectory());
 		}
 
 		private void btnHideControls_Click(object sender, EventArgs e)
@@ -214,9 +218,9 @@ namespace Clock
 			SetStartup(loadOnWindowsStartToolStripMenuItem.Checked);
 		}
 
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			sw.Close();
-		}
+		//private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		//{
+		//	sw.Close();
+		//}
 	}
 }
