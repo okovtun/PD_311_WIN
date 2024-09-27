@@ -11,6 +11,7 @@ using System.Drawing.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
+using Microsoft.Win32;
 
 namespace Clock
 {
@@ -23,6 +24,7 @@ namespace Clock
 		public string AlarmFile { get; set; }
 		public DateTime AlarmTime { get; set; }
 		public System.Windows.Forms.NotifyIcon NotifyIcon { get => notifyIconSystemTray; }
+		StreamWriter sw;
 		public MainForm()
 		{
 			InitializeComponent();
@@ -43,10 +45,17 @@ namespace Clock
 			chooseFontDialog = new ChooseFont(this);
 			alarmDialog = new AlarmDialog(this);
 			//AlarmTime = DateTime.Now;
+
+			RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false);
+			object registryClockEntry = rk.GetValue("Clock");
+			if (registryClockEntry != null) loadOnWindowsStartToolStripMenuItem.Checked = true;
+
+			StreamWriter sw = new StreamWriter("session.log");
 		}
 		void CreateCustomFont()
 		{
 			Console.WriteLine(Directory.GetCurrentDirectory());
+			Directory.SetCurrentDirectory(Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf('\\')));
 			Directory.SetCurrentDirectory("..\\..\\Fonts");
 			Console.WriteLine(Directory.GetCurrentDirectory());
 
@@ -55,6 +64,13 @@ namespace Clock
 			Font font = new Font(pfc.Families[0], labelTime.Font.Size);
 			pfc.Dispose();
 			labelTime.Font = font;
+		}
+		void SetStartup(bool autostart = false)
+		{
+			RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if (autostart) rk.SetValue("Clock", Application.ExecutablePath);
+			else rk.DeleteValue("Clock", false);
+			rk.Dispose();
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
@@ -76,6 +92,7 @@ namespace Clock
 				axWindowsMediaPlayer.URL = AlarmFile;
 				axWindowsMediaPlayer.Ctlcontrols.play();
 			}
+			Console.WriteLine(Directory.GetCurrentDirectory());
 		}
 
 		private void btnHideControls_Click(object sender, EventArgs e)
@@ -190,6 +207,16 @@ namespace Clock
 		private void alarmToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			alarmDialog.ShowDialog();
+		}
+
+		private void loadOnWindowsStartToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
+		{
+			SetStartup(loadOnWindowsStartToolStripMenuItem.Checked);
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			sw.Close();
 		}
 	}
 }
