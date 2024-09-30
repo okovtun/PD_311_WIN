@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace Clock
 {
-	class Alarm:IComparable
+	internal class Alarm:IComparable, IEquatable<Alarm>
 	{
-		string Filename { get; set; }
+		public string Filename { get; set; }
 		DateTime alarmTime;
 		public DateTime AlarmTime
 		{
@@ -33,6 +33,10 @@ namespace Clock
 		public int CompareTo(object other)
 		{
 			return AlarmTime.CompareTo((other as Alarm).AlarmTime);
+		}
+		public bool Equals(Alarm other)
+		{
+			return this.AlarmTime.Equals(other.AlarmTime);
 		}
 	}
 }

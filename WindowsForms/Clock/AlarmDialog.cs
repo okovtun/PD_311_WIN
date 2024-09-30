@@ -15,6 +15,7 @@ namespace Clock
 	{
 		MainForm owner;
 		string filename;
+		internal CheckedListBox CheckedListBoxPendingAlarms { get => checkedListBoxPendingAlarms; }
 		public AlarmDialog()
 		{
 			InitializeComponent();
@@ -44,9 +45,17 @@ namespace Clock
 		{
 			try
 			{
-				checkedListBoxPendingAlarms.Items.Add(new Alarm(dateTimePickerAlarmTime.Value, filename), true);
-				List<Alarm> alarms = new List<Alarm>(checkedListBoxPendingAlarms.Items.OfType<Alarm>().ToList());
-				Console.WriteLine(alarms.Min());
+				Alarm alarm = new Alarm(dateTimePickerAlarmTime.Value, filename);
+				//Alarm alarm2 = new Alarm(dateTimePickerAlarmTime.Value, filename);
+				//Console.WriteLine(alarm.Equals(alarm2));
+				//Console.WriteLine(checkedListBoxPendingAlarms.Items.IndexOf(alarm));
+				List<Alarm> all_alarms = new List<Alarm>(checkedListBoxPendingAlarms.Items.OfType<Alarm>().ToList());
+				if (!all_alarms.Contains(alarm))
+					checkedListBoxPendingAlarms.Items.Add(alarm, true);
+				Console.WriteLine(all_alarms.Min());
+				List<Alarm> active_alarms = new List<Alarm>(checkedListBoxPendingAlarms.CheckedItems.OfType<Alarm>().ToList());
+				owner.Alarm = active_alarms.Min();
+				Console.WriteLine(all_alarms.Count + "\t" + active_alarms.Count);
 			}
 			catch (Exception ex)
 			{

@@ -23,6 +23,7 @@ namespace Clock
 		AlarmDialog alarmDialog;
 		public string AlarmFile { get; set; }
 		public DateTime AlarmTime { get; set; }
+		internal Alarm Alarm { get; set; }
 		public System.Windows.Forms.NotifyIcon NotifyIcon { get => notifyIconSystemTray; }
 		StreamWriter sw;
 		public MainForm()
@@ -90,12 +91,25 @@ namespace Clock
 			DateTime currentTime = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerSecond);
 			//https://stackoverflow.com/questions/1004698/how-to-truncate-milliseconds-off-of-a-net-datetime#:~:text=%2F%2FRemove%20milliseconds%20DateTime%20date,mm%3Ass%22%2C%20null)%3B
 			//Console.WriteLine($"{AlarmTime}\t{currentTime}");
-			if (AlarmTime.Equals(currentTime))
+			if (Alarm != null && Alarm.AlarmTime.Equals(currentTime))
 			{
 				//MessageBox.Show("Пора вставать");
-				axWindowsMediaPlayer.URL = AlarmFile;
+				axWindowsMediaPlayer.Ctlcontrols.stop();
+				axWindowsMediaPlayer.URL = Alarm.Filename;
 				axWindowsMediaPlayer.Ctlcontrols.play();
+
+				int currentAlarm = alarmDialog.CheckedListBoxPendingAlarms.CheckedItems.IndexOf(Alarm);
+				alarmDialog.CheckedListBoxPendingAlarms.SetItemCheckState(currentAlarm, CheckState.Unchecked);
+				Alarm = alarmDialog.CheckedListBoxPendingAlarms.CheckedItems.OfType<Alarm>().ToList().Min();
+				Console.WriteLine($"First pending alarm: {Alarm}");
 			}
+			//if (AlarmTime.Equals(currentTime))
+			//{
+			//	//MessageBox.Show("Пора вставать");
+			//	axWindowsMediaPlayer.URL = AlarmFile;
+			//	axWindowsMediaPlayer.Ctlcontrols.play();
+			//}
+
 			//Console.WriteLine(Directory.GetCurrentDirectory());
 		}
 

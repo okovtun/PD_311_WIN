@@ -40,12 +40,13 @@
 			// dateTimePickerAlarmTime
 			// 
 			this.dateTimePickerAlarmTime.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.dateTimePickerAlarmTime.CustomFormat = "  hh:mm tt";
 			this.dateTimePickerAlarmTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.dateTimePickerAlarmTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-			this.dateTimePickerAlarmTime.Location = new System.Drawing.Point(94, 12);
+			this.dateTimePickerAlarmTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+			this.dateTimePickerAlarmTime.Location = new System.Drawing.Point(116, 12);
 			this.dateTimePickerAlarmTime.Name = "dateTimePickerAlarmTime";
 			this.dateTimePickerAlarmTime.ShowUpDown = true;
-			this.dateTimePickerAlarmTime.Size = new System.Drawing.Size(200, 44);
+			this.dateTimePickerAlarmTime.Size = new System.Drawing.Size(178, 44);
 			this.dateTimePickerAlarmTime.TabIndex = 0;
 			// 
 			// buttonOK
